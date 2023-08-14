@@ -1,0 +1,10 @@
+[package]
+name = "minecraft2fun/clanny"
+description = "Clanny Systems API"
+version = "0.1.2"
+license = "MIT"
+authors = ["minecraft2fun"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "server"
+
+[dependencies]
