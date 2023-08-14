@@ -12,7 +12,7 @@ onBrokenMarkdownLinks = "warn"
 # From git:
 organizationName = "AuthorName"
 projectName = "MyProjectName"
-url = "https://AuthorName.github.io"
+url = "https://clanny.github.io"
 baseUrl = "/MyProjectName"
 tagline = "Your project's tagline"
 
