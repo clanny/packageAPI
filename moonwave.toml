@@ -3,27 +3,47 @@ gitRepoUrl = "https://github.com/clanny/packageAPI"
 
 gitSourceBranch = "master"
 changelog = true
-classOrder = []
+classOrder = ["UtilServer"]
 
 [docusaurus]
 onBrokenLinks = "throw"
 onBrokenMarkdownLinks = "warn"
 
 # From git:
-organizationName = "AuthorName"
-projectName = "MyProjectName"
+organizationName = "Clanny Systems"
+projectName = "API Package"
 url = "https://clanny.github.io"
-baseUrl = "/MyProjectName"
-tagline = "Your project's tagline"
+baseUrl = "/api/package"
+tagline = "Clanny Systems API Package"
+
+[[navbar.items]]
+href = "https://discord.gg/WWYsWjr"
+label = "Discord"
+position = "right"
 
 [footer]
 style = "dark"
-copyright = "Copyright © 2021 AuthorName. Built with Moonwave and Docusaurus"
+copyright = "Copyright © 2023 Clanny Systems. Built with Moonwave and Docusaurus"
 
 [[footer.links]]
-title = "examples"
+title = "Links"
 
 [[footer.links.items]]
-label = "example"
-href = "https://example.com/"
+label = "Website"
+href = "https://clanny.systems"
 
+[[footer.links.items]]
+label = "Dashboard"
+href = "https://dashboard.clanny.systems"
+
+
+[[footer.links]]
+title = "Information"
+
+[[footer.links.items]]
+label = "API Playground"
+href = "https://apidocs.clanny.systems"
+
+[[footer.links.items]]
+label = "Clanny Wiki"
+href = "https://wiki.clanny.systems"

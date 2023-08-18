@@ -1,9 +1,21 @@
 --[=[
-    @class NewToken
-
-    This is my first class.
+	@class UtilServer
+	@server
+	Everything that runs on the server.  Every function yields.
 ]=]
 
+--[=[
+	@interface NewToken
+	@within UtilServer
+	.Name? "Name" -- The name of the new token.
+	.ApiKey "ApiKey" -- The long ID when generating your API key.
+	.KeyId "KeyId" -- the short ID when generating your API key.
+	.GroupId "GroupId" -- Your [Roblox](https://roblox.com) group's ID.
+
+	:::info Name field
+	Although the "Name" field is not required, is is highly suggested to have it.  Especially when having two or more instances running.  Without the name field the first token created will receive the name "Primary", and the second to be made will receive "Secondary".  **Any after that will error.**
+	:::
+]=]
 
 type NewToken = {
 	Name: string?,
@@ -19,6 +31,14 @@ type XpReturn = {
 	NewAmount: number,
 }
 
+--[=[
+@within UtilServer
+@interface XpReturn
+.Code "Success" | "NotSetup" | "Failed",
+.OldAmount number,
+.NewAmount number,
+]=]
+
 type RankReturn = {
 	id: number,
 	locked: boolean,
@@ -32,6 +52,21 @@ type RankReturn = {
 	roleEnabled: boolean,
 }
 
+--[=[
+@within UtilServer
+@interface RankReturn
+.id number,
+.locked boolean,
+.name string,
+.perm number,
+.rank number,
+.xp number,
+.prefix string,
+.prefixEnabled boolean,
+.role string,
+.roleEnabled: boolean,
+]=]
+
 type RoleReturn = {
 	id: number,
 	name: string,
@@ -40,6 +75,16 @@ type RoleReturn = {
 	ID: number,
 }
 
+--[=[
+@within UtilServer
+@interface RoleReturn
+.id number,
+.name string,
+.rank number,
+.memberCount number,
+.ID number,
+]=]
+
 type MedalReturn = {
 	Description: string,
 	Name: string,
@@ -47,15 +92,32 @@ type MedalReturn = {
 	Id: number,
 }
 
+--[=[
+@within UtilServer
+@interface MedalReturn
+.Description string,
+.Name string,
+.Emoji string,
+.Id number,
+]=]
+
 type UserMedalReturn = {
 	amount: number,
 	id: string | number,
 }
 
+--[=[
+@within UtilServer
+@interface UserMedalReturn
+.amount number
+.id string | number,
+]=]
+
 type UtilServerReturn = {
 	CreateToken: (NewToken) -> APIpoints,
 	GetToken: (TokenName: string) -> APIpoints,
 	DeleteToken: (TokenName: string) -> boolean,
+	QuickClean: () -> boolean,
 }
 
 type APIpoints = {
@@ -92,6 +154,47 @@ type APIpoints = {
 	},
 }
 
+--[=[
+	@within UtilServer
+	@type APIpoints { XPendpoints & RANKendpoints &  MEDALSendpoints & PENDINGendpoints}
+]=]
+
+--[=[
+	@within UtilServer
+	@interface 	XPendpoints
+	.GetXp (userId: number | string) -> number
+	.IncrementXp (userId: number | string, amount: number | string) -> XpReturn,
+	.SetXp (userId: number | string, amount: number | string) -> XpReturn,
+]=]
+
+--[=[
+	@within UtilServer
+	@interface 	RANKendpoints
+	.GetUserRank (userId: number | string) -> { Previous: RankReturn | nil, Current: RankReturn | nil, Next: RankReturn | nil },
+	.GetAllRanks () -> { <RankReturn> },
+	.PromoteUser (userId: number | string) -> { newRole: RoleReturn | nil, oldRole: RoleReturn | nil },
+	.DemoteUser (userId: number | string) -> { newRole: RoleReturn | nil, oldRole: RoleReturn | nil },
+	.SetUserRank (userId number | string, rank number | string) -> { newRole: RoleReturn | nil, oldRole: RoleReturn | nil }
+]=]
+
+--[=[
+	@within UtilServer
+	@interface 	MEDALSendpoints
+	.GetAllMedals () -> { <MedalReturn> },
+	.GetUserMedals (userId: number | string) -> { MedalReturn & UserMedalReturn },
+	.GetUserMedalCount (userId: number | string, medalId: number | string) -> { UserMedalReturn | "nomedal" },
+	.AddUserMedal (userId: number | string, medalId: number | string) -> "added1" | "createdStore",
+	.RemoveUserMedal (userId: number | string, medalId: number | string) -> "removed1" | "deletedStore" | "doesntHaveMedal",
+]=]
+
+--[=[
+	@within UtilServer
+	@interface 	PENDINGendpoints
+	.AcceptUser (userId: number | string) -> boolean,
+	.DeclineUser (userId: number | string) -> boolean,
+	Used to accept or decline pending users into your group.
+]=]
+
 local HttpService = game:GetService("HttpService")
 
 local Tokens = {}
@@ -107,7 +210,9 @@ local OnHold = {}
 local function SendRequest(url: string, method: string, tokenName: string, body: table?)
 	assert(DoesTokenExist(tokenName), `Token does not appear to exist; Name given: {tokenName}`)
 	local hold = table.insert(OnHold, {})
-	repeat wait() until #OnHold <= 5
+	repeat
+		wait()
+	until #OnHold <= 5
 	local TokenData = Tokens[tokenName]
 	local Success, Response = pcall(function()
 		return HttpService:RequestAsync({
@@ -181,7 +286,7 @@ local EndPoints = function()
 		end,
 		AddXp = function(userId)
 			local request = SendRequest("exp/")
-		end
+		end,
 	}
 	local RANK = {
 		GetUserRank = function(
@@ -318,6 +423,14 @@ end
 
 local UtilServer: UtilServerReturn = {}
 
+--[=[
+	@function CreateToken
+	@within UtilServer
+	@param {TokenData} NewToken
+	@return APIpoints
+	Initiating your new API.  You can start calling API endpoints directly after from the table that gets returned.
+]=]
+
 function UtilServer.CreateToken(tokenData: NewToken): APIpoints
 	assert(type(tokenData) == "table", `Token must be a table; got {type(tokenData)}`)
 
@@ -354,6 +467,14 @@ function UtilServer.CreateToken(tokenData: NewToken): APIpoints
 	return new
 end
 
+--[=[
+	@function GetToken
+	@within UtilServer
+	A way to get your APIpoints through the Token name.
+	@param TokenName string
+	@return APIpoints
+]=]
+
 function UtilServer.GetToken(tokenName: string): APIpoints | false
 	if not DoesTokenExist(tokenName) then
 		return false
@@ -364,6 +485,17 @@ function UtilServer.GetToken(tokenName: string): APIpoints | false
 	end
 end
 
+--[=[
+	@function DeleteToken
+	@within UtilServer
+	A way to delete your API key data from the code.
+	@param TokenName string
+	@return boolean
+	:::note 💀
+	*if you actually find a use for this, please tell me.  minecraft2fun on Discord.*
+	:::
+]=]
+
 function UtilServer.DeleteToken(tokenName: string): boolean
 	if DoesTokenExist(tokenName) then
 		Tokens[tokenName] = nil
@@ -371,6 +503,23 @@ function UtilServer.DeleteToken(tokenName: string): boolean
 	else
 		return false
 	end
+end
+
+--[=[
+	@function QuickClean
+	@within UtilServer
+	@tag Unreleased
+	Deletes all API Key data immediately, great if you really want to be careful.
+	@return boolean
+]=]
+
+function UtilServer.QuickClean(): boolean
+	pcall(function()
+		Tokens = nil
+		Tokens = {}
+		return true
+	end)
+	return false
 end
 
 return UtilServer
