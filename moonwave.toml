@@ -13,7 +13,7 @@ onBrokenMarkdownLinks = "warn"
 organizationName = "Clanny Systems"
 projectName = "API Package"
 url = "https://clanny.github.io"
-baseUrl = "/api/package"
+baseUrl = "/package"
 tagline = "Clanny Systems API Package"
 
 [[navbar.items]]
