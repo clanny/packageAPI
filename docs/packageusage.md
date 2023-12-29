@@ -5,7 +5,7 @@ sidebar_position: 4
 # Using our modern API Package
 We will explain how to use this package now.
 :::danger
-Please make sure the scripts are in `ServerStorage` or `ServerScriptService` ro prevent your API keys from being leaked.
+Make sure all API calls, and API keys can only be seen by the server.  An easy way of doing this is by using only Server scripts, or putting all API related code inside `ServerScriptService` or `ServerStorage`.
 :::
 In these examples the script will be in `ServerStorage` and named `Clanny`.
 
@@ -80,9 +80,9 @@ Clanny.DeleteToken(TokenName)
 ```
 - **TokenName** is either the `Name` field used in `.CreateToken` or the default value of "Primary", "Secondary".
 
-## Quick Delete - UNRELEASED
+## Quick Clean
 Quickly deletes all API Keys and Token data
 ```lua
 local Clanny = require(game.ServerStorage.Clanny)
-Clanny.QuickDelete()
+Clanny.QuickClean()
 ```

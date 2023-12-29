@@ -15,6 +15,7 @@ Rojo is a program for Roblox with multiple usages.  Including, connecting direct
 
 ### Installation
 
+## External IDE
 1. Install your favorite Toolchain manager, personally I use [Foreman](https://github.com/Roblox/foreman).
 2. Next setup your toolchain manager with the tools needed.  If you're using Foreman, create a file named `foreman.toml`, the code should look something like this.
     1. Make sure to run install on your manager to get the files you need.
@@ -32,6 +33,7 @@ Clanny = "minecraft2fun/clanny@^0.1.2"
 5. All set, you may need to shuffle around your `package.default.json` file to make sure your server packages are noticed and being put into the game.
 
 ## Roblox Studio
-:::note Coming Soon
-**COMING SOON:** if you really want to use this still, head to [Wally/clanny](https://wally.run/package/minecraft2fun/clanny) and click "Download".  Copy all code in the `.lua` file into a Module Script in Roblox studio.  Make sure to place the script in ServerScriptService or ServerStorage.  From there continue as normal to the [Package Usage](packageusage) page.
-:::
+You can get the code from the Roblox Marketplace [here](https://create.roblox.com/marketplace/asset/15092265219)
+
+## Roblox-TS
+A TS types file is available from the Wally download or the github

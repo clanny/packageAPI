@@ -196,6 +196,7 @@ type APIpoints = {
 ]=]
 
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
 
 local Tokens = {}
 
@@ -222,6 +223,7 @@ local function SendRequest(url: string, method: string, tokenName: string, body:
 				["group-id"] = tostring(TokenData.GroupId),
 				["key-id"] = tostring(TokenData.KeyId),
 				["authorization"] = tostring(TokenData.ApiKey),
+				["Content-Type"] = "application/json",
 			},
 			Body = body and HttpService:JSONEncode(body) or nil,
 		})
@@ -491,9 +493,6 @@ end
 	A way to delete your API key data from the code.
 	@param TokenName string
 	@return boolean
-	:::note 💀
-	*if you actually find a use for this, please tell me.  minecraft2fun on Discord.*
-	:::
 ]=]
 
 function UtilServer.DeleteToken(tokenName: string): boolean
@@ -508,7 +507,6 @@ end
 --[=[
 	@function QuickClean
 	@within UtilServer
-	@tag Unreleased
 	Deletes all API Key data immediately, great if you really want to be careful.
 	@return boolean
 ]=]
